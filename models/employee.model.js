@@ -40,6 +40,15 @@ const EmployeeSchema=new mongoose.Schema({
                 throw new Error('Salary must be a positive number');
             }
         }
+    } ,
+    contact: {
+        type: Number,
+        required: true,
+        validate(value) {
+            if (value < 9000000000&&value>9999999999) {
+                throw new Error('Contact must be a 10 digit number');
+            }
+        }
     }   
 })
 
