@@ -16,10 +16,10 @@ const Login = () => {
 
     try {
       const response = await axios.post('http://localhost:11000/api/auth/login', loginData, {
-        withCredentials: true, // If using cookies for authentication
+        //withCredentials: true, // If using cookies for authentication
       });
       console.log(response.data);
-    //   localStorage.setItem('token', response.data.token); // Store token if using JWT
+      localStorage.setItem('token', response.data.token); // Store token if using JWT
       navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');

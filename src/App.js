@@ -1,9 +1,9 @@
-// filepath: /home/naagaraj/Development/minipro_Backend/Frontend/track-ease/src/App.js
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
-import { Element } from "react-scroll";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Link, Element } from "react-scroll";
 import Login from "./Pages/Login";
+import Dashboard from "./Pages/Dashboard";
 
 const App = () => {
   return (
@@ -18,7 +18,7 @@ const App = () => {
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav ms-auto">
               <li className="nav-item">
-                <Link className="nav-link" to="#" smooth={true} duration={500}>Home</Link>
+                <Link className="nav-link" to="home" smooth={true} duration={500}>Home</Link>
               </li>
               <li className="nav-item">
                 <Link className="nav-link" to="about" smooth={true} duration={500}>About Us</Link>
@@ -30,7 +30,7 @@ const App = () => {
                 <Link className="nav-link" to="contact" smooth={true} duration={500}>Contact</Link>
               </li>
               <li className="nav-item">
-                <Link className="btn btn-primary ms-3" to="/login">Login</Link>
+                <a className="btn btn-primary ms-3" href="/login">Login</a>
               </li>
             </ul>
           </div>
@@ -38,6 +38,7 @@ const App = () => {
 
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/" element={
             <>
               {/* Hero Section */}
