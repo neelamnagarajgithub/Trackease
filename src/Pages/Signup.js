@@ -15,7 +15,7 @@ const Signup = () => {
     setError(null);
 
     try {
-      const response = await axios.post('https://trackease-backend.vercel.app/api/employees/api/auth/register', signupData);
+      const response = await axios.post('https://trackease-backend.vercel.app/api/auth/register', signupData);
       console.log(response.data);
       navigate('/login');
     } catch (err) {

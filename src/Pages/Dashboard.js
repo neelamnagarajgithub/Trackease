@@ -21,7 +21,7 @@ const Dashboard = () => {
 
       const fetchDashboardData = async () => {
         try {
-          const response = await axios.get('https://trackease-backend.vercel.app/api/employees/api/dashboard', {
+          const response = await axios.get('https://trackease-backend.vercel.app/api/dashboard', {
             headers: { Authorization: `Bearer ${token}` },
           });
           setDashboardData(response.data);

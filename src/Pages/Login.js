@@ -15,7 +15,7 @@ const Login = ({ setIsAuthenticated }) => {
     setError(null);
 
     try {
-      const response = await axios.post('https://trackease-backend.vercel.app/api/employees/api/auth/login', loginData, {
+      const response = await axios.post('https://trackease-backend.vercel.app/api/auth/login', loginData, {
         //withCredentials: true, // If using cookies for authentication
       });
       console.log(response.data);
