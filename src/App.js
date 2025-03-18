@@ -1,44 +1,81 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { Link, Element } from "react-scroll";
+import { BrowserRouter as Router, Route, Routes, Link, Navigate } from "react-router-dom";
+import { Element, animateScroll as scroll } from "react-scroll";
 import Login from "./Pages/Login";
 import Dashboard from "./Pages/Dashboard";
+import Signup from "./Pages/Signup";
 
 const App = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      setIsAuthenticated(true);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setIsAuthenticated(false);
+    window.location.href = '/login'; // Redirect to login page
+  };
+
+  const ProtectedRoute = ({ children }) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      return <Navigate to="/login" />;
+    }
+    return children;
+  };
+
   return (
     <Router>
       <>
         {/* Navbar */}
         <nav className="navbar navbar-expand-lg navbar-light bg-white px-5 py-3 shadow-sm">
-          <a className="navbar-brand fw-bold" href="#">TrackEase</a>
+          <Link className="navbar-brand fw-bold" to="/">TrackEase</Link>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>
           </button>
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav ms-auto">
-              <li className="nav-item">
-                <Link className="nav-link" to="home" smooth={true} duration={500}>Home</Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="about" smooth={true} duration={500}>About Us</Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="services" smooth={true} duration={500}>Services</Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="contact" smooth={true} duration={500}>Contact</Link>
-              </li>
-              <li className="nav-item">
-                <a className="btn btn-primary ms-3" href="/login">Login</a>
-              </li>
+              {!isAuthenticated ? (
+                <>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/">Home</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/about">About Us</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/services">Services</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/contact">Contact</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="btn btn-primary ms-3" to="/login">Login</Link>
+                  </li>
+                </>
+              ) : (
+                <li className="nav-item">
+                  <button className="btn btn-danger ms-3" onClick={handleLogout}>Logout</button>
+                </li>
+              )}
             </ul>
           </div>
         </nav>
 
         <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/dashboard" element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          } />
           <Route path="/" element={
             <>
               {/* Hero Section */}

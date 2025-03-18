@@ -1,29 +1,25 @@
 import React, { useState } from 'react';
 import { Form, Button, Container, Card, Alert, Spinner } from 'react-bootstrap';
 import axios from 'axios';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-const Login = ({ setIsAuthenticated }) => {
-  const [loginData, setLoginData] = useState({ email: '', password: '' });
+const Signup = () => {
+  const [signupData, setSignupData] = useState({ email: '', password: '' });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
     try {
-      const response = await axios.post('https://trackease-backend.vercel.app/api/employees/api/auth/login', loginData, {
-        //withCredentials: true, // If using cookies for authentication
-      });
+      const response = await axios.post('https://trackease-backend.vercel.app/api/employees/api/auth/register', signupData);
       console.log(response.data);
-      localStorage.setItem('token', response.data.token); // Store token if using JWT
-      setIsAuthenticated(true);
-      navigate('/dashboard');
+      navigate('/login');
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed');
+      setError(err.response?.data?.message || 'Signup failed');
     } finally {
       setLoading(false);
     }
@@ -33,16 +29,16 @@ const Login = ({ setIsAuthenticated }) => {
     <Container className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
       <Card style={{ width: '400px' }} className="p-4 shadow">
         <Card.Body>
-          <h2 className="text-center mb-4">Login</h2>
+          <h2 className="text-center mb-4">Sign Up</h2>
           {error && <Alert variant="danger">{error}</Alert>}
-          <Form onSubmit={handleLogin}>
+          <Form onSubmit={handleSignup}>
             <Form.Group className="mb-3">
               <Form.Label>Email</Form.Label>
               <Form.Control
                 type="email"
                 required
-                value={loginData.email}
-                onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
+                value={signupData.email}
+                onChange={(e) => setSignupData({ ...signupData, email: e.target.value })}
                 placeholder="Enter email"
               />
             </Form.Group>
@@ -52,23 +48,20 @@ const Login = ({ setIsAuthenticated }) => {
               <Form.Control
                 type="password"
                 required
-                value={loginData.password}
-                onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
+                value={signupData.password}
+                onChange={(e) => setSignupData({ ...signupData, password: e.target.value })}
                 placeholder="Enter password"
               />
             </Form.Group>
 
             <Button variant="primary" type="submit" className="w-100" disabled={loading}>
-              {loading ? <Spinner animation="border" size="sm" /> : 'Login'}
+              {loading ? <Spinner animation="border" size="sm" /> : 'Sign Up'}
             </Button>
           </Form>
-          <div className="text-center mt-3">
-            <p>Don't have an account? <Link to="/signup">Sign up</Link></p>
-          </div>
         </Card.Body>
       </Card>
     </Container>
   );
 };
 
-export default Login;
+export default Signup;
