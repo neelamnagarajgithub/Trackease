@@ -15,15 +15,41 @@ const Login = ({ setIsAuthenticated }) => {
     setError(null);
 
     try {
-      const response = await axios.post('https://trackease-backend.vercel.app/api/auth/login', loginData, {
-        //withCredentials: true, // If using cookies for authentication
-      });
-      console.log(response.data);
-      localStorage.setItem('token', response.data.token); // Store token if using JWT
-      setIsAuthenticated(true);
-      navigate('/dashboard');
+      // Using the proxy configuration
+      const response = await axios.post('/api/auth/login', loginData);
+      
+      if (response.data && response.data.token) {
+        // Store token in localStorage
+        localStorage.setItem('token', response.data.token);
+        
+        // Store user info if available
+        if (response.data.user) {
+          // Store the complete user object including organization info
+          localStorage.setItem('user', JSON.stringify(response.data.user));
+          
+          // Store organization ID separately for easy access
+          localStorage.setItem('organizationId', response.data.user.organizationId);
+          
+          // Store organization name if available
+          if (response.data.user.organizationName) {
+            localStorage.setItem('organizationName', response.data.user.organizationName);
+          }
+        }
+        
+        // Update authentication state
+        setIsAuthenticated(true);
+        
+        // Redirect to dashboard
+        navigate('/dashboard');
+      } else {
+        setError('Invalid response from server');
+      }
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed');
+      console.error('Login error:', err);
+      setError(
+        err.response?.data?.message || 
+        'Login failed. Please check your credentials and try again.'
+      );
     } finally {
       setLoading(false);
     }
